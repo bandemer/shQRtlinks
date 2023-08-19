@@ -1,33 +1,34 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+	{% include 'navbar.html.twig' %}
 
-<div class="container py-5">
+	<div class="container py-5">
 
-<h1>Aktuelle Kurz-Links</h1>
+		<h2>Your Short Links</h2>
 
-<table class="table my-4">
-	<thead>
-		<tr>
-			<th>ID</th>
-			<th>Status</th>
-			<th>Alias</th>
-			<th>Ziel-URL</th>
-			<th>Klicks</th>
-		</tr>
-	</thead>
-	<tbody>
-	{% for l in links %}
-		<tr>
-			<td>{{ l.id }}</td>
-			<td>{{ l.status }}</td>
-			<td><a href="{{ url('shortlink', { alias: l.alias }) }}" target="_blank" rel="noopener">{{ l.alias }}</td>
-			<td>{{ l.url }}</td>
-			<td>{{ l.clicks }}</td>
-		</tr>
-	{% endfor %}
-	</tbody>
-</table>
-</div>
+		<table class="table my-4">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Status</th>
+					<th>Alias</th>
+					<th>Ziel-URL</th>
+					<th>Klicks</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for l in links %}
+				<tr>
+					<td>{{ l.id }}</td>
+					<td>{{ l.status }}</td>
+					<td><a href="{{ url('shortlink', { alias: l.alias }) }}" target="_blank" rel="noopener">{{ l.alias }}</td>
+					<td>{{ l.url }}</td>
+					<td>{{ l.clicks }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 
 {% endblock %}

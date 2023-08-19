@@ -24,10 +24,13 @@ class LoginController extends AbstractController
     }
     
     #[Route('/logout', name: 'app_logout')]
-    public function logout(Security $security): Response    
+    public function logout(Security $security): Response
     {
         $security->logout(false);
-        
-        return new Response('Logged out');
+        $this->addFlash(
+            'notice',
+            'Your were logged out successfully.'
+        );
+        return $this->redirectToRoute('index');
     }
 }
