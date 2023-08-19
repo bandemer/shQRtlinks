@@ -6,6 +6,11 @@
 
     <div class="container py-5">
 
+        <h2>
+            🔗 shQRtlinks - Open Source Software for Short Links and QR Codes
+        </h2>
+        <hr class="mb-4">
+
         {% for message in app.flashes('notice') %}
             <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
                 {{ message }}
@@ -13,9 +18,35 @@
             </div>
         {% endfor %}
 
-    <h2>shQRtlinks</h2>
-
-    <a href="{{ url('links') }}">Übersicht Links</a>
+        <div class="row my-4 my-xl-5">
+            <div class="col-sm-4 mb-3 mb-sm-0">
+                <div class="card h-100">
+                    <div class="card-body py-xl-4">
+                        <h3 class="card-title">Manage Short Links and QR Codes</h3>
+                        <p class="card-text my-3">With shQRtlinks you can easily and comfortably manage your short links and the corresponding QR codes.</p>
+                        <a href="{{ url('links') }}" class="btn btn-primary">Manage your Links</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card h-100">
+                    <div class="card-body py-xl-4">
+                        <h3 class="card-title">Create an Account</h3>
+                        <p class="card-text my-3">Start today and create a new account. It is free of charge and does not oblige to anything.</p>
+                        <a href="{{ url('app_register') }}" class="btn btn-primary">Register new Account</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card h-100">
+                    <div class="card-body py-xl-4">
+                        <h3 class="card-title">Take Full Control of your Links</h3>
+                        <p class="card-text my-3">shQRtlinks is Open Scource Software. Host it on your own server and take full control of your short links and QR codes.</p>
+                        <a href="https://github.com/bandemer/shQRtlinks" class="btn btn-primary">Download latest release</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 {% endblock %}

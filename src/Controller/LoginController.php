@@ -29,7 +29,7 @@ class LoginController extends AbstractController
         $security->logout(false);
         $this->addFlash(
             'notice',
-            'Your were logged out successfully.'
+            'You were logged out successfully.'
         );
         return $this->redirectToRoute('index');
     }
