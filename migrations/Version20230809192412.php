@@ -20,12 +20,12 @@ final class Version20230809192412 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_D182A118E16C6B94 ON links (alias)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_D182A118E16C6B94 ON link (alias)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP INDEX UNIQ_D182A118E16C6B94 ON links');
+        $this->addSql('DROP INDEX UNIQ_D182A118E16C6B94 ON link');
     }
 }

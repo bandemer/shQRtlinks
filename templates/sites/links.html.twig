@@ -5,7 +5,17 @@
 
 	<div class="container py-5">
 
-		<h2>Your Short Links</h2>
+		<h2 class="d-flex my-3">
+			Your Short Links <a class="btn btn-primary ms-auto me-2" href="{{ url('newlink') }}">Add new Link</a>
+		</h2>
+		<hr class="mb-4">
+
+		{% for message in app.flashes('notice') %}
+			<div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+				{{ message }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		{% endfor %}
 
 		<table class="table my-4">
 			<thead>
@@ -22,8 +32,8 @@
 				<tr>
 					<td>{{ l.id }}</td>
 					<td>{{ l.status }}</td>
-					<td><a href="{{ url('shortlink', { alias: l.alias }) }}" target="_blank" rel="noopener">{{ l.alias }}</td>
-					<td>{{ l.url }}</td>
+					<td><a href="{{ url('shortlink', { alias: l.alias }) }}" target="_blank" rel="noopener">{{ l.alias }}</a></td>
+					<td><a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.url }}</a></td>
 					<td>{{ l.clicks }}</td>
 				</tr>
 			{% endfor %}

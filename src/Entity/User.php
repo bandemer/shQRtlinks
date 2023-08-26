@@ -34,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
-    #[ORM\OneToMany(mappedBy: 'User', targetEntity: Links::class)]
+    #[ORM\OneToMany(mappedBy: 'User', targetEntity: Link::class)]
     private Collection $links;
 
     public function __construct()
@@ -132,7 +132,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->links;
     }
 
-    public function addLink(Links $link): static
+    public function addLink(Link $link): static
     {
         if (!$this->links->contains($link)) {
             $this->links->add($link);
@@ -142,7 +142,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeLink(Links $link): static
+    public function removeLink(Link $link): static
     {
         if ($this->links->removeElement($link)) {
             // set the owning side to null (unless already changed)

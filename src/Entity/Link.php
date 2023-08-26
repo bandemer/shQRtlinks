@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\LinksRepository;
+use App\Repository\LinkRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-#[ORM\Entity(repositoryClass: LinksRepository::class)]
+#[ORM\Entity(repositoryClass: LinkRepository::class)]
 #[UniqueEntity('alias')]
-class Links
+class Link
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,7 +22,7 @@ class Links
     private ?string $url = null;
 
     #[ORM\Column]
-    private ?int $status = 0;
+    private ?int $status = 1;
 
     #[ORM\Column]
     private ?int $clicks = 0;
