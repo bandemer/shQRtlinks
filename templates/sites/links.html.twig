@@ -6,7 +6,8 @@
 	<div class="container py-5">
 
 		<h2 class="d-flex my-3">
-			Your Short Links <a class="btn btn-primary ms-auto me-2" href="{{ url('newlink') }}">Add new Link</a>
+			Your Short Links <a class="btn btn-primary ms-auto me-2" href="{{ url('newlink') }}">
+				<i class="bi-plus-circle mx-1"></i> Add new Link</a>
 		</h2>
 		<hr class="mb-4">
 
@@ -21,20 +22,41 @@
 			<thead>
 				<tr>
 					<th>ID</th>
-					<th>State</th>
+					<th class="text-center">State</th>
 					<th>Alias</th>
 					<th>Destination URL</th>
 					<th>Clicks</th>
+					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
+			{% if links|length == 0 %}
+				<tr>
+					<td colspan="6" class="p-4 p-lg-5 text-center bg-light">
+						<h4 class="text-muted"><i class="bi bi-emoji-frown"></i>
+							Unfortunately, no links were found.</h4>
+					</td>
+				</tr>
+			{% endif %}
+
+
 			{% for l in links %}
 				<tr>
 					<td>{{ l.id }}</td>
-					<td>{{ l.status }}</td>
+					<td class="text-center">
+						{% if l.status == 0 %}
+						<i class="bi-circle-fill text-danger"></i>
+						{% else %}
+						<i class="bi-circle-fill text-success"></i>
+						{% endif %}
+					</td>
 					<td><a href="{{ url('shortlink', { alias: l.alias }) }}" target="_blank" rel="noopener">{{ l.alias }}</a></td>
 					<td><a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.url }}</a></td>
 					<td>{{ l.clicks }}</td>
+					<td>
+						<i class="bi-trash mx-1"></i>
+						<i class="bi-pencil-fill mx-1"></i>
+					</td>
 				</tr>
 			{% endfor %}
 			</tbody>

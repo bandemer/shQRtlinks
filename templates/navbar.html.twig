@@ -13,7 +13,8 @@
                     </li>
                 </ul>
                 <div class="ms-auto me-3 text-white">Logged in as: {{ app.user.email }}</div>
-                <a href="{{ url('app_logout') }}" class="btn btn-sm btn-light me-3">Logout</a>
+                <a href="{{ url('app_logout') }}" class="btn btn-sm btn-light me-3 pe-3">
+                    <i class="bi-box-arrow-right mx-1"></i> Logout</a>
             {% else %}
                 <form class="d-flex ms-auto" action="{{ path('app_login') }}" method="post">
                     <input class="form-control me-2" type="text" id="username" name="_username" placeholder="Email">
