@@ -5,18 +5,18 @@
 
 <div class="container py-5">
 
-
 	{{ form_start(form) }}
 	{{ form_errors(form) }}
-	<h2 class="my-4">Add a new Short Link</h2>
+
+	<h2 class="my-4">Edit Short Link</h2>
 	<hr class="my-4 mb-xl-5">
 
 	<div class="form-group row my-md-4">
 
 		<div class="col-12 col-md-3 mb-2">
-			Alias for new Link :
+			Alias for Link :
 		</div>
-		<div class="col-12 col-md-5">
+		<div class="col-12 col-md-6">
 			{{ form_errors(form.alias) }}
 			<div class="input-group mb-2">
 				<span class="input-group-text" id="link_alias_addon">{{ baseurl }}</span>
@@ -28,19 +28,16 @@
 	<div class="form-group row mb-md-4">
 
 		<div class="col-12 col-md-3 mb-2">
-			Target URL incl. http(s)://
+			Destination URL incl. http(s)://
 		</div>
-
-		<div class="col-8 col-md-5">
-
+		<div class="col-8 col-md-6">
 			{{ form_errors(form.url) }}
-			{{ form_widget(form.url, {'attr': {'placeholder': 'https://'}}) }}
-
+			{{ form_widget(form.url, {'id': 'linkUrl', 'attr': {'placeholder': 'https://'}}) }}
 		</div>
 		<div class="col-4 col-md-2 col-xl-3 pt-1">
-			<button class="btn btn-sm btn-light border mr-2" onclick="return testLinkUrl();">
+			<a class="btn btn-sm btn-light border mr-2" id="testLinkUrl">
 				<i class="bi-box-arrow-up-right mx-2" aria-hidden="true"></i> <span class="d-none d-lg-inline me-2">Test</span>
-			</button>
+			</a>
 		</div>
 
 	</div>
@@ -49,12 +46,12 @@
 		<div class="col-0 col-sm-3"></div>
 		<div class="col-12 col-sm-8 py-3">
 			<a href="{{ url('links') }}" class="btn btn-secondary me-3">Cancel</a>
-			{{ form_widget(form.senden) }}
+			{{ form_widget(form.senden, { 'label': 'Update'}) }}
 		</div>
 	</div>
 
+	<input type="hidden" name="linkid" value="{{ id }}">
 	{{ form_end(form) }}
 
 </div>
-
 {% endblock %}

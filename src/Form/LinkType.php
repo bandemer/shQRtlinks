@@ -10,12 +10,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LinkType extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+
         $builder
             ->add('alias')
             ->add('url')
-            ->add('senden', SubmitType::class, ['label' => 'Create'])
+            ->add('senden', SubmitType::class)
         ;
     }
 
