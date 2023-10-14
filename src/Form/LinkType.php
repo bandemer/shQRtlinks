@@ -15,7 +15,7 @@ class LinkType extends AbstractType
         $builder
             ->add('alias')
             ->add('url')
-            ->add('senden', SubmitType::class, ['label' => 'Submit'])
+            ->add('senden', SubmitType::class, ['label' => 'Create'])
         ;
     }
 

@@ -48,8 +48,10 @@ class DefaultController extends AbstractController
             return $this->redirectToRoute('links');
         }
 
-        return $this->render('sites/newlink.html.twig', ['form' => $form]);
+        return $this->render('sites/newlink.html.twig', ['form' => $form, 'baseurl' => 'https://bmrx.de/' ]);
     }
+
+
     
     #[Route(path: "/{alias}", priority: -100, name: "shortlink")]
     public function shortlink(EntityManagerInterface $em, string $alias) : RedirectResponse

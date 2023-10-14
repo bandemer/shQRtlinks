@@ -72,12 +72,4 @@ Encore
 
 module.exports = Encore.getWebpackConfig();
 
-module.exports = {
-    module: {
-        rules: [{
-            test: /\.woff2?$/,
-            type: "asset/resource",
-        }]
-    }
-}
 
