@@ -45,16 +45,11 @@
 				</tr>
 			{% endif %}
 
-
 			{% for l in links %}
 				<tr>
 					<td>{{ l.id }}</td>
 					<td class="text-center">
-						{% if l.status == 0 %}
-						<i class="bi-circle-fill text-danger"></i>
-						{% else %}
-						<i class="bi-circle-fill text-success"></i>
-						{% endif %}
+						<a href="#" onclick="changeStatus('{{ url('links_changestatus') }}', {{ l.id }}, '{{ csrf_token('links-changestatus') }}')"><i id="linkstatus{{ l.id }}" class="bi-circle-fill text-{% if l.status == 0 %}danger{% else %}success{% endif %}"></i></a>
 					</td>
 					<td><a href="{{ url('shortlink', { alias: l.alias }) }}" target="_blank" rel="noopener">{{ l.alias }}</a></td>
 					<td><a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.url }}</a></td>
@@ -67,7 +62,6 @@
 								<i class="bi-trash-fill mx-1"></i> Delete
 							</button>
 						</form>
-
 						<form action="{{ url('links_edit') }}" method="post" class="me-3">
 							<input type="hidden" name="token" value="{{ csrf_token('links-edit') }}"/>
 							<input type="hidden" name="linkid" value="{{ l.id }}"/>

@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Link;
 use App\Repository\LinkRepository;
 use App\Form\LinkType;
@@ -15,12 +16,41 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class LinksController extends AbstractController
 {
-
     #[Route(path: "/links", name: "links")]
     #[IsGranted('ROLE_USER', message: 'You are not allowed to access this site!')]
     public function links(LinkRepository $links) : Response
     {
         return $this->render('sites/links/links.html.twig', ['links' => $links->findBy(['User' => $this->getUser()])]);
+    }
+
+    #[Route(path: "/links/changestatus", name: "links_changestatus")]
+    #[IsGranted('ROLE_USER', message: 'You are not allowed to access this site!')]
+    public function changeStatusOfLink(Request $request, EntityManagerInterface $em) : JsonResponse
+    {
+        $id = $request->get('linkid', 0);
+        $to = $request->get('to', 0);
+        $token = $request->get('token');
+
+        $link = $em->getRepository(Link::class)->find($id);
+
+        $code = 200;
+
+        if ($this->isCsrfTokenValid('links-changestatus', $token) AND
+            $link->getId() > 0
+            AND $link->getUser() === $this->getUser()) {
+
+            $link->setStatus($to);
+            $em->persist($link);
+            $em->flush();
+        }
+
+        $response = ['message' => 'OK'];
+        return $this->json($response, $code,
+            [
+                'Access-Control-Allow-Origin' => '*',
+                'X-Robots-Tag' => 'noindex, nofollow'
+            ]
+        );
     }
 
     #[Route(path: "/links/new", name: "links_new")]
