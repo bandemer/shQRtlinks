@@ -149,6 +149,7 @@ class LinksController extends AbstractController
         $em->flush();
         
         $r = new RedirectResponse($l->getUrl());
+        $r->setStatusCode(301);
         return $r;
     }
     
