@@ -12,5 +12,24 @@ class DefaultController extends AbstractController
     public function index() : Response
     {
         return $this->render('sites/index.html.twig');
-    }    
+    }
+
+
+    #[Route(path: "/contact", name: "contact")]
+    public function contac() : Response
+    {
+        return $this->render('sites/contact.html.twig');
+    }
+
+    #[Route(path: "/imprint", name: "imprint")]
+    public function imprint() : Response
+    {
+        return $this->render('sites/imprint.html.twig');
+    }
+
+    #[Route(path: "/privacy", name: "privacy")]
+    public function privacy() : Response
+    {
+        return $this->render('sites/privacy.html.twig');
+    }
 }

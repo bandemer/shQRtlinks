@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<div class="d-flex flex-column vh-100">
 
     {% include 'navbar.html.twig' %}
 
@@ -19,8 +20,8 @@
         {% endfor %}
 
         <div class="row my-4 my-xl-5">
-            <div class="col-sm-4 mb-3 mb-sm-0">
-                <div class="card h-100">
+            <div class="col-12 col-lg-4 mb-3">
+                <div class="card h-100 p-3 p-lg-4">
                     <div class="card-body py-xl-4">
                         <h3 class="card-title">Manage Short Links and QR Codes</h3>
                         <p class="card-text my-3">With shQRtlinks you can easily and comfortably manage your short links and the corresponding QR codes.</p>
@@ -28,8 +29,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="card h-100">
+            <div class="col-12 col-lg-4 mb-3">
+                <div class="card h-100 p-3 p-lg-4">
                     <div class="card-body py-xl-4">
                         <h3 class="card-title">Create an Account</h3>
                         <p class="card-text my-3">Start today and create a new account. It is free of charge and does not oblige to anything.</p>
@@ -37,8 +38,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="card h-100">
+            <div class="col-12 col-lg-4 mb-3">
+                <div class="card h-100 p-3 p-lg-4">
                     <div class="card-body py-xl-4">
                         <h3 class="card-title">Take Full Control of your Links</h3>
                         <p class="card-text my-3">shQRtlinks is Open Scource Software. Host it on your own server and take full control of your short links and QR codes.</p>
@@ -47,6 +48,9 @@
                 </div>
             </div>
         </div>
-
     </div>
+
+    {% include 'footer.html.twig' %}
+
+</div>
 {% endblock %}
