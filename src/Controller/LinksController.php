@@ -38,22 +38,22 @@ class LinksController extends AbstractController
     public function links(LinkRepository $links, SessionInterface $session, Request $req) : Response
     {
         $data = [
-            'links'         => [],
-            'page'          => 0,
-            'linksperpage'  => 0,
+            'links'                 => [],
+            'page'                  => 0,
+            'linksperpage'          => 0,
             'linksperpagechoices'   => $this->linksPerPageChoices,
-            'amount'        => 0,
-            'query'         => '',
-            'pagination'     => [],
-            'filter'        => [],
+            'amount'                => 0,
+            'searchquery'           => '',
+            'pagination'            => [],
+            'filter'                => [],
         ];
 
         $filter = $this->getFilter($session);
 
         $data['linksperpage'] = $this->getLinksPerPage($session);
 
-        $this->searchQuery = trim($req->query->get('query', ''));
-        $data['query'] = $this->searchQuery;
+        $this->getSearchQuery($session);
+        $data['searchquery'] = $this->searchQuery;
 
         $data['page'] = $this->currentPage = (int) $req->query->get('page', 0);
 
@@ -66,14 +66,12 @@ class LinksController extends AbstractController
             $data['orderdir'] = $this->orderDir = $orderDir;
         }
 
-        $data['links'] = $links->getUsersLinks($this->getUser(),
+        $data['links'] = $links->getUsersLinks($this->getUser(), $this->searchQuery,
             [$orderBy => $orderDir], $this->linksPerPage,
             $this->currentPage * $this->linksPerPage);
 
-        $data['amount'] = count($links->findBy(['User' => $this->getUser()]));
-
+        $data['amount'] = $links->getAmount($this->getUser(), $this->searchQuery);
         $data['pagination'] = $this->getPagination($data['amount']);
-
         $data['filter'] = $filter;
 
         return $this->render('sites/links/links.html.twig', ['data' => $data]);
@@ -210,6 +208,45 @@ class LinksController extends AbstractController
     }
 
     /**
+     * Set search query
+     *
+     */
+    #[Route(path: "/links/setquery", name: "links_setquery")]
+    #[IsGranted('ROLE_USER', message: 'You are not allowed to access this site!')]
+    public function setQuery(Request $req, SessionInterface $session)
+    {
+        $searchQuery = trim($req->query->get('searchquery'));
+        if ($searchQuery != null) {
+            $session->set('links-searchquery', $searchQuery);
+        }
+        return $this->redirectToRoute('links');
+    }
+
+    /**
+     * Get search query
+     *
+     */
+    private function getSearchQuery(SessionInterface $session)
+    {
+        $this->searchQuery = '';
+        if ($session->has('links-searchquery')) {
+            $this->searchQuery = $session->get('links-searchquery');
+        }
+    }
+
+    /**
+     * Reset search query
+     *
+     */
+    #[Route(path: "/links/resetquery", name: "links_resetquery")]
+    #[IsGranted('ROLE_USER', message: 'You are not allowed to access this site!')]
+    public function resetQuery(SessionInterface $session)
+    {
+        $session->remove('links-searchquery');
+        return $this->redirectToRoute('links');
+    }
+
+    /**
      * Set filter values for links
      *
      */
@@ -236,7 +273,7 @@ class LinksController extends AbstractController
             }
             $session->set('links-filter', $filter);
         }
-        return $this->redirectToRoute('links_index');
+        return $this->redirectToRoute('links');
     }
 
     /**

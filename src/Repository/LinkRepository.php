@@ -21,12 +21,26 @@ class LinkRepository extends ServiceEntityRepository
         parent::__construct($registry, Link::class);
     }
     
-    public function getUsersLinks($user, $order, $linksPerPage, $offset)
+    public function getUsersLinks($user, $searchQuery, $order, $linksPerPage, $offset)
     {
         $rA = [];
-        $links = $this->findBy(['User' => $user], $order, $linksPerPage, $offset);
+
+        $eb = $this->createQueryBuilder('l')
+            ->where('l.User = :user');
+        if ($searchQuery != '') {
+            $eb->andWhere('l.alias LIKE :query OR l.url LIKE :query')
+                ->setParameter('query', '%'.$searchQuery.'%');
+        }
+        $eb->setParameter('user', $user)
+            ->setFirstResult($offset)
+            ->setMaxResults($linksPerPage);
+        foreach ($order AS $ok => $ov) {
+            $eb->orderBy('l.'.$ok, $ov);
+        }
+        $result = $eb->getQuery()->getResult();
+
         $number = $offset;
-        foreach ($links AS $link) {
+        foreach ($result AS $link) {
             ++ $number;
             $rA[] = [
                 'id' => $link->getId(),
@@ -40,6 +54,20 @@ class LinkRepository extends ServiceEntityRepository
         return $rA;
     }
 
+    public function getAmount($user, $searchQuery)
+    {
+        $eb = $this->createQueryBuilder('l')
+            ->where('l.User = :user');
+        if ($searchQuery != '') {
+            $eb->andWhere('l.alias LIKE :query OR l.url LIKE :query')
+                ->setParameter('query', '%'.$searchQuery.'%');
+        }
+        $eb->setParameter('user', $user);
+
+        $result = $eb->getQuery()->getResult();
+
+        return count($result);
+    }
 
 //    /**
 //     * @return Links[] Returns an array of Links objects
