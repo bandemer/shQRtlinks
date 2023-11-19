@@ -1,27 +1,42 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Login{% endblock %}
-
 {% block body %}
+<div class="d-flex flex-column vh-100">
+    {% include 'navbar.html.twig' %}
+    <div class="container py-5">
 
-<div class="container">
-    {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+        <h2>Login</h2>
+        <hr class="mb-4">
+        <div class="row my-4 my-xl-5">
+            <div class="col-12">
 
-    <form action="{{ path('app_login') }}" method="post">
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}">
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}<</div>
+                {% endif %}
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password">
+                <form action="{{ path('app_login') }}" method="post">
+                    <div class="mb-3 row">
+                        <label class="col-form-label col-sm-2 required" for="username">Email:</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="username" name="_username" required="required" value="{{ last_username }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-form-label col-sm-2 required" for="password">Password:</label>
+                        <div class="col-sm-10">
+                            <input type="password" id="password" name="_password" required="required" class="form-control">
+                        </div>
+                    </div>
 
-        {# If you want to control the URL the user is redirected to on success
-        <input type="hidden" name="_target_path" value="/account"> #}
-    	<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-    	
-        <button type="submit">login</button>
-    </form>
+                    {# If you want to control the URL the user is redirected to on success
+                    <input type="hidden" name="_target_path" value="/account"> #}
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                </form>
 
+            </div>
+        </div>
+    </div>
+    {% include 'footer.html.twig' %}
 </div>
 {% endblock %}
