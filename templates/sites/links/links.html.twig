@@ -25,7 +25,7 @@
 		{% endfor %}
 
 		<div class="row my-lg-4">
-			<div class="col-12 col-lg-8 d-flex flex-row px-3">
+			<div class="col-12 col-lg-6 d-flex flex-row px-3">
 				<div class="me-2">
 					{% if data.searchquery %}
 						{{ data.amount|number_format(0, ',', '.') }} Links with <em>&bdquo;{{ data.searchquery }}&ldquo;</em> :
@@ -50,21 +50,41 @@
 				</nav>
 			</div>
 
-			<div class="col-12 col-lg-4 px-3">
-				<form action="{{ url('links_setquery') }}" method="get" class="d-flex justify-content-end">
-					<input type="text" class="form-control form-control-sm {% if data.searchquery != '' %}border-warning{% endif %}" id="searchquery" name="searchquery" placeholder="Search for" value="{{ data.searchquery }}">
-					<button type="submit" class="btn btn-sm {% if data.searchquery != '' %}btn-warning {% else %} btn-light {% endif %} border mx-2">
-						<i class="bi-search mx-1" aria-hidden="true"></i>
-					</button>
-					{% if data.searchquery %}
-						<a href="{{ path("links_resetquery") }}" class="btn btn-sm btn-warning border me-2">
-							<i class="bi-x mx-1" aria-hidden="true"></i>
-						</a>
-					{% endif %}
-					<button type="button" class="btn btn-sm btn-light border" data-toggle="modal" data-target="#filtermodal">
-						<i class="bi-funnel mx-1" aria-hidden="true"></i>
-					</button>
-				</form>
+			<div class="col-12 col-lg-6 px-3 d-flex flex-row justify-content-end">
+					<form action="{{ url('links_setquery') }}" method="get" class="">
+					<div class="d-flex flex-row justify-content-end">
+						<div>
+							<input type="text" class="form-control form-control-sm {% if data.searchquery != '' %}border-warning{% endif %}" id="searchquery" name="searchquery" placeholder="Search for.." value="{{ data.searchquery }}">
+						</div>
+						<div>
+							<button type="submit" class="btn btn-sm {% if data.searchquery != '' %}btn-warning {% else %} btn-light {% endif %} border mx-2">
+								<i class="bi-search mx-1" aria-hidden="true"></i>
+							</button>
+						</div>
+						{% if data.searchquery %}
+						<div>
+							<a href="{{ path("links_resetquery") }}" class="btn btn-sm btn-warning border me-2">
+								<i class="bi-x mx-1" aria-hidden="true"></i>
+							</a>
+						</div>
+						{% endif %}
+					</div>
+
+					</form>
+					<div class="dropdown">
+						<button type="button" class="btn  btn-sm btn-light border dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+							<i class="bi-funnel mx-1" aria-hidden="true"></i> Filter
+						</button>
+						<div class="dropdown-menu p-3" style="width: 15rem;">
+							<button class="btn btn-sm btn-light border my-2 w-100 text-start">
+								<i class="bi-star-fill mx-1" aria-hidden="true"></i> Only favorite links</button>
+							<button class="btn btn-sm btn-light border my-2 w-100 text-start">
+								<i class="bi-circle-fill text-success mx-1" aria-hidden="true"></i> Only active links</button>
+							<button class="btn btn-sm btn-light border my-2 w-100 text-start">
+								<i class="bi-circle-fill text-danger mx-1" aria-hidden="true"></i> Only inactive links</button>
+						</div>
+					</div>
+
 			</div>
 		</div>
 
@@ -99,19 +119,25 @@
 					<td class="px-3"><a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.url }}</a></td>
 					<td class="text-center">{{ l.clicks }}</td>
 					<td class="d-flex justify-content-center">
-						<form action="{{ url('links_delete') }}" method="post" class="me-3">
-							<input type="hidden" name="token" value="{{ csrf_token('links-delete') }}"/>
-							<input type="hidden" name="linkid" value="{{ l.id }}"/>
-							<button type="submit" title="Delete" class="btn btn-light border">
-								<i class="bi-trash-fill mx-1"></i> Delete
-							</button>
-						</form>
-						<form action="{{ url('links_edit') }}" method="post" class="me-3">
+						<form action="{{ url('links_edit') }}" method="post" class="me-2">
 							<input type="hidden" name="token" value="{{ csrf_token('links-edit') }}"/>
 							<input type="hidden" name="linkid" value="{{ l.id }}"/>
-							<button type="submit" title="Edit" class="btn btn-light border">
-								<i class="bi-pencil-fill mx-1"></i> Edit
-							</button>
+							<button type="submit" title="Edit" class="btn btn-light border"><i class="bi-qr-code"></i></button>
+						</form>
+						<form action="{{ url('links_edit') }}" method="post" class="me-2">
+							<input type="hidden" name="token" value="{{ csrf_token('links-edit') }}"/>
+							<input type="hidden" name="linkid" value="{{ l.id }}"/>
+							<button type="submit" title="Edit" class="btn btn-light border"><i class="bi-star"></i></button>
+						</form>
+						<form action="{{ url('links_edit') }}" method="post" class="me-2">
+							<input type="hidden" name="token" value="{{ csrf_token('links-edit') }}"/>
+							<input type="hidden" name="linkid" value="{{ l.id }}"/>
+							<button type="submit" title="Edit" class="btn btn-light border"><i class="bi-pencil-fill"></i></button>
+						</form>
+						<form action="{{ url('links_delete') }}" method="post" class="me-2">
+							<input type="hidden" name="token" value="{{ csrf_token('links-delete') }}"/>
+							<input type="hidden" name="linkid" value="{{ l.id }}"/>
+							<button type="submit" title="Delete" class="btn btn-light border"><i class="bi-trash-fill"></i></button>
 						</form>
 					</td>
 				</tr>
