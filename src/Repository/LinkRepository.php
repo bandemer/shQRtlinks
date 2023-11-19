@@ -21,7 +21,26 @@ class LinkRepository extends ServiceEntityRepository
         parent::__construct($registry, Link::class);
     }
     
-    
+    public function getUsersLinks($user, $order, $linksPerPage, $offset)
+    {
+        $rA = [];
+        $links = $this->findBy(['User' => $user], $order, $linksPerPage, $offset);
+        $number = $offset;
+        foreach ($links AS $link) {
+            ++ $number;
+            $rA[] = [
+                'id' => $link->getId(),
+                'number' => $number,
+                'status' => $link->getStatus(),
+                'alias' => $link->getAlias(),
+                'url'   => $link->getUrl(),
+                'clicks' => $link->getClicks(),
+                ];
+        }
+        return $rA;
+    }
+
+
 //    /**
 //     * @return Links[] Returns an array of Links objects
 //     */
