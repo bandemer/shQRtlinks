@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Link;
 use App\Repository\LinkRepository;
 use App\Form\LinkType;
+use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -32,6 +33,13 @@ class LinksController extends AbstractController
     private $searchQuery = '';
 
     private $filter = [];
+
+    private $baseurl = '';
+
+    public function __construct(OptionRepository $or)
+    {
+        $this->baseurl = $or->findBy(['name' => 'baseurl'])[0]->getValue();
+    }
 
     #[Route(path: "/links", name: "links")]
     #[IsGranted('ROLE_USER', message: 'You are not allowed to access this site!')]
@@ -125,7 +133,7 @@ class LinksController extends AbstractController
             return $this->redirectToRoute('links');
         }
 
-        return $this->render('sites/links/new.html.twig', ['form' => $form, 'baseurl' => 'https://bmrx.de/' ]);
+        return $this->render('sites/links/new.html.twig', ['form' => $form, 'baseurl' => $this->baseurl]);
     }
 
     #[Route(path: "/links/edit", name: "links_edit")]
@@ -164,7 +172,7 @@ class LinksController extends AbstractController
             [
                 'id' => $id,
                 'form' => $form,
-                'baseurl' => 'https://bmrx.de/'
+                'baseurl' => $this->baseurl,
             ]);
     }
 
