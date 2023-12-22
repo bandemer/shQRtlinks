@@ -122,13 +122,9 @@
 						<form action="{{ url('links_edit') }}" method="post" class="me-2">
 							<input type="hidden" name="token" value="{{ csrf_token('links-edit') }}"/>
 							<input type="hidden" name="linkid" value="{{ l.id }}"/>
-							<button type="submit" title="Edit" class="btn btn-light border"><i class="bi-qr-code"></i></button>
+							<button type="submit" title="Get QR-Code" class="btn btn-light border"><i class="bi-qr-code"></i></button>
 						</form>
-						<form action="{{ url('links_edit') }}" method="post" class="me-2">
-							<input type="hidden" name="token" value="{{ csrf_token('links-edit') }}"/>
-							<input type="hidden" name="linkid" value="{{ l.id }}"/>
-							<button type="submit" title="Edit" class="btn btn-light border"><i class="bi-star"></i></button>
-						</form>
+						<a href="#" class="btn btn-light border me-2" onclick="fav('{{ url('links_fav') }}', {{ l.id }}, '{{ csrf_token('links-fav') }}'); return false;" title="Fav"><i id="linkfav{{ l.id }}" class="bi-star{% if l.fav == 1 %}-fill{% endif %}"></i></a>
 						<form action="{{ url('links_edit') }}" method="post" class="me-2">
 							<input type="hidden" name="token" value="{{ csrf_token('links-edit') }}"/>
 							<input type="hidden" name="linkid" value="{{ l.id }}"/>

@@ -37,9 +37,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'User', targetEntity: Link::class)]
     private Collection $links;
 
+    #[ORM\ManyToMany(targetEntity: Link::class, inversedBy: 'users')]
+    private Collection $favs;
+
     public function __construct()
     {
         $this->links = new ArrayCollection();
+        $this->favs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,6 +154,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $link->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Link>
+     */
+    public function getFavs(): Collection
+    {
+        return $this->favs;
+    }
+
+    public function addFav(Link $fav): static
+    {
+        if (!$this->favs->contains($fav)) {
+            $this->favs->add($fav);
+        }
+
+        return $this;
+    }
+
+    public function removeFav(Link $fav): static
+    {
+        $this->favs->removeElement($fav);
 
         return $this;
     }

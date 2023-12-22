@@ -42,14 +42,22 @@ class LinkRepository extends ServiceEntityRepository
         $number = $offset;
         foreach ($result AS $link) {
             ++ $number;
-            $rA[] = [
-                'id' => $link->getId(),
-                'number' => $number,
-                'status' => $link->getStatus(),
-                'alias' => $link->getAlias(),
-                'url'   => $link->getUrl(),
-                'clicks' => $link->getClicks(),
+            $tempArray = [
+                'id'        => $link->getId(),
+                'number'    => $number,
+                'status'    => $link->getStatus(),
+                'alias'     => $link->getAlias(),
+                'url'       => $link->getUrl(),
+                'clicks'    => $link->getClicks(),
+                'fav'       => 0,
                 ];
+            foreach ($link->getUsers() as $u) {
+                if ($u == $user) {
+                    $tempArray['fav'] = 1;
+                    break;
+                }
+            }
+            $rA[] = $tempArray;
         }
         return $rA;
     }

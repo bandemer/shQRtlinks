@@ -98,10 +98,34 @@ class LinksController extends AbstractController
         $code = 200;
 
         if ($this->isCsrfTokenValid('links-changestatus', $token) AND
-            $link->getId() > 0
-            AND $link->getUser() === $this->getUser()) {
+            $link->getId() > 0 AND $link->getUser() === $this->getUser()) {
 
             $link->setStatus($to);
+            $em->persist($link);
+            $em->flush();
+        }
+
+        $response = ['message' => 'OK'];
+        return $this->json($response, $code,
+            [
+                'Access-Control-Allow-Origin' => '*',
+                'X-Robots-Tag' => 'noindex, nofollow'
+            ]
+        );
+    }
+
+    #[Route(path: "/links/fav", name: "links_fav")]
+    #[IsGranted('ROLE_USER', message: 'You are not allowed to access this site!')]
+    public function fav(Request $request, EntityManagerInterface $em) : JsonResponse
+    {
+        $id = $request->get('linkid', 0);
+        $link = $em->getRepository(Link::class)->find($id);
+        $token = $request->get('token');
+        $code = 200;
+
+        if ($this->isCsrfTokenValid('links-fav', $token) AND
+            $link->getId() > 0 AND $link->getUser() === $this->getUser()) {
+            $link->addUser($this->getUser());
             $em->persist($link);
             $em->flush();
         }

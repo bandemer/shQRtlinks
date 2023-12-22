@@ -38,5 +38,31 @@ async function changeStatus(url, linkid, token)
         }
     }
 }
-
 window.changeStatus = changeStatus;
+
+async function fav(url, linkid, token)
+{
+    url += '?linkid=' + linkid + '&token=' + token + '&to=';
+    let to = 0;
+    let clist = document.getElementById('linkfav'+linkid).classList;
+    if (clist.contains('bi-star')) {
+        to = 1;
+    }
+    url += to;
+
+    const response = await fetch(url);
+    const json = await response.json();
+
+    if (json.message == 'OK') {
+        if (to == 0) {
+            document.getElementById('linkfav'+linkid).classList.remove('bi-star-fill');
+            document.getElementById('linkfav'+linkid).classList.add('bi-star');
+        } else {
+            document.getElementById('linkfav'+linkid).classList.remove('bi-star');
+            document.getElementById('linkfav'+linkid).classList.add('bi-star-fill');
+        }
+    }
+}
+
+
+window.fav = fav;
