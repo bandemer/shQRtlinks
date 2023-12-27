@@ -21,7 +21,7 @@ class LinkRepository extends ServiceEntityRepository
         parent::__construct($registry, Link::class);
     }
     
-    public function getUsersLinks($user, $searchQuery, $order, $linksPerPage, $offset)
+    public function getUsersLinks($user, $searchQuery, $order, $linksPerPage, $offset, $filter)
     {
         $rA = [];
 
@@ -30,6 +30,17 @@ class LinkRepository extends ServiceEntityRepository
         if ($searchQuery != '') {
             $eb->andWhere('l.alias LIKE :query OR l.url LIKE :query')
                 ->setParameter('query', '%'.$searchQuery.'%');
+        }
+        if ($filter['filter_is_active']) {
+            if ($filter['only_active_links']) {
+                $eb->andWhere('l.status = 1');
+            }
+            if ($filter['only_inactive_links']) {
+                $eb->andWhere('l.status = 0');
+            }
+            if ($filter['only_my_favs']) {
+                $eb->leftJoin('l.users', 'mn');
+            }
         }
         $eb->setParameter('user', $user)
             ->setFirstResult($offset)
@@ -41,28 +52,43 @@ class LinkRepository extends ServiceEntityRepository
 
         $number = $offset;
         foreach ($result AS $link) {
-            ++ $number;
-            $tempArray = [
-                'id'        => $link->getId(),
-                'number'    => $number,
-                'status'    => $link->getStatus(),
-                'alias'     => $link->getAlias(),
-                'url'       => $link->getUrl(),
-                'clicks'    => $link->getClicks(),
-                'fav'       => 0,
-                ];
-            foreach ($link->getUsers() as $u) {
-                if ($u == $user) {
-                    $tempArray['fav'] = 1;
-                    break;
+
+            if ($filter['filter_is_active'] AND $filter['only_my_favs']) {
+                if ($link->getUsers()->contains($user)) {
+                    ++ $number;
+                    $tempArray = [
+                        'id'        => $link->getId(),
+                        'number'    => $number,
+                        'status'    => $link->getStatus(),
+                        'alias'     => $link->getAlias(),
+                        'url'       => $link->getUrl(),
+                        'clicks'    => $link->getClicks(),
+                        'fav'       => 1,
+                        ];
+                    $rA[] = $tempArray;
                 }
+            } else {
+                ++ $number;
+                $fav = 0;
+                if ($link->getUsers()->contains($user)) {
+                    $fav = 1;
+                }
+                $tempArray = [
+                    'id'        => $link->getId(),
+                    'number'    => $number,
+                    'status'    => $link->getStatus(),
+                    'alias'     => $link->getAlias(),
+                    'url'       => $link->getUrl(),
+                    'clicks'    => $link->getClicks(),
+                    'fav'       => $fav,
+                ];
+                $rA[] = $tempArray;
             }
-            $rA[] = $tempArray;
         }
         return $rA;
     }
 
-    public function getAmount($user, $searchQuery)
+    public function getAmount($user, $searchQuery, $filter)
     {
         $eb = $this->createQueryBuilder('l')
             ->where('l.User = :user');
@@ -70,35 +96,27 @@ class LinkRepository extends ServiceEntityRepository
             $eb->andWhere('l.alias LIKE :query OR l.url LIKE :query')
                 ->setParameter('query', '%'.$searchQuery.'%');
         }
+        if ($filter['filter_is_active']) {
+            if ($filter['only_active_links']) {
+                $eb->andWhere('l.status = 1');
+            }
+            if ($filter['only_inactive_links']) {
+                $eb->andWhere('l.status = 0');
+            }
+        }
         $eb->setParameter('user', $user);
 
         $result = $eb->getQuery()->getResult();
 
+        if ($filter['filter_is_active'] AND $filter['only_my_favs']) {
+            foreach ($result AS $rk => $r) {
+                if (!$r->getUsers()->contains($user)) {
+                    unset($result[$rk]);
+                }
+            }
+            $result = array_values($result);
+        }
         return count($result);
     }
 
-//    /**
-//     * @return Links[] Returns an array of Links objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('l')
-//            ->andWhere('l.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('l.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Links
-//    {
-//        return $this->createQueryBuilder('l')
-//            ->andWhere('l.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

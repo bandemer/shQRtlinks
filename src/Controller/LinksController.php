@@ -76,9 +76,10 @@ class LinksController extends AbstractController
 
         $data['links'] = $links->getUsersLinks($this->getUser(), $this->searchQuery,
             [$orderBy => $orderDir], $this->linksPerPage,
-            $this->currentPage * $this->linksPerPage);
+            $this->currentPage * $this->linksPerPage,
+            $filter);
 
-        $data['amount'] = $links->getAmount($this->getUser(), $this->searchQuery);
+        $data['amount'] = $links->getAmount($this->getUser(), $this->searchQuery, $filter);
         $data['pagination'] = $this->getPagination($data['amount']);
         $data['filter'] = $filter;
 
@@ -119,13 +120,18 @@ class LinksController extends AbstractController
     public function fav(Request $request, EntityManagerInterface $em) : JsonResponse
     {
         $id = $request->get('linkid', 0);
+        $to = $request->get('to', 0);
         $link = $em->getRepository(Link::class)->find($id);
         $token = $request->get('token');
         $code = 200;
 
         if ($this->isCsrfTokenValid('links-fav', $token) AND
             $link->getId() > 0 AND $link->getUser() === $this->getUser()) {
-            $link->addUser($this->getUser());
+            if ($to == 0) {
+                $link->removeUser($this->getUser());
+            } else {
+                $link->addUser($this->getUser());
+            }
             $em->persist($link);
             $em->flush();
         }
@@ -290,19 +296,21 @@ class LinksController extends AbstractController
             $filter = $this->getDefaultFilter();
             $session->set('links-filter', $filter);
         } else {
-            $filter = $this->getDefaultFilter();
-            if ($req->request->get('filter_only_with_clicks') == '1') {
-                $filter['only_with_clicks'] = true;
-                $filter['filter_is_active'] = true;
+            $filter = $this->getFilter($session);
+            switch ($req->request->get('filter_action')) {
+                case 'only_inactive_links':
+                    $filter['only_inactive_links'] = $req->request->get('filter_value') == 1 ? true : false;
+                    break;
+                case 'only_active_links':
+                    $filter['only_active_links'] = $req->request->get('filter_value') == 1 ? true : false;
+                    break;
+                case 'only_my_favs':
+                    $filter['only_my_favs'] = $req->request->get('filter_value') == 1 ? true : false;
+                    break;
             }
-            if ($req->request->get('filter_only_active_links') == '1') {
-                $filter['only_active_links'] = true;
-                $filter['filter_is_active'] = true;
-            }
-            if ($req->request->get('filter_only_my_favs') == '1') {
-                $filter['only_my_favs'] = true;
-                $filter['filter_is_active'] = true;
-            }
+            $filter['filter_is_active'] = ($filter['only_inactive_links']
+                OR $filter['only_active_links']
+                OR $filter['only_my_favs']);
             $session->set('links-filter', $filter);
         }
         return $this->redirectToRoute('links');
@@ -316,7 +324,6 @@ class LinksController extends AbstractController
     public function setLinksPerPage(Request $req, SessionInterface $session)
     {
         $linksPerPage = (int) $req->query->get('linksperpage');
-
         if ($linksPerPage != 0 AND
             in_array($linksPerPage, $this->linksPerPageChoices)) {
             $session->set('links-linksperpage', $linksPerPage);
@@ -346,8 +353,8 @@ class LinksController extends AbstractController
     {
         return [
             'filter_is_active'  => false,
-            'only_with_clicks'  => false,
-            'only_active_links' => false,
+            'only_active_links'  => false,
+            'only_inactive_links' => false,
             'only_my_favs'      => false,
         ];
     }
@@ -476,6 +483,4 @@ class LinksController extends AbstractController
         }
         return $pagination;
     }
-
-
 }

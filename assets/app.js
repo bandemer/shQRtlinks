@@ -43,10 +43,10 @@ window.changeStatus = changeStatus;
 async function fav(url, linkid, token)
 {
     url += '?linkid=' + linkid + '&token=' + token + '&to=';
-    let to = 0;
+    let to = 1;
     let clist = document.getElementById('linkfav'+linkid).classList;
-    if (clist.contains('bi-star')) {
-        to = 1;
+    if (clist.contains('bi-star-fill')) {
+        to = 0;
     }
     url += to;
 

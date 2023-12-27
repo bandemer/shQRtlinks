@@ -6,7 +6,7 @@
 	<div class="container py-5">
 
 		<h2 class="d-flex my-3">
-			Your Short Links <a class="btn btn-primary ms-auto me-2" href="{{ url('links_new') }}">
+			Your Links <a class="btn btn-primary ms-auto me-2" href="{{ url('links_new') }}">
 				<i class="bi-plus-circle mx-1" aria-hidden="true"></i> Add new Link</a>
 		</h2>
 		<hr class="my-4 mb-xl-5">
@@ -51,39 +51,51 @@
 			</div>
 
 			<div class="col-12 col-lg-6 px-3 d-flex flex-row justify-content-end">
-					<form action="{{ url('links_setquery') }}" method="get" class="">
-					<div class="d-flex flex-row justify-content-end">
-						<div>
-							<input type="text" class="form-control form-control-sm {% if data.searchquery != '' %}border-warning{% endif %}" id="searchquery" name="searchquery" placeholder="Search for.." value="{{ data.searchquery }}">
-						</div>
-						<div>
-							<button type="submit" class="btn btn-sm {% if data.searchquery != '' %}btn-warning {% else %} btn-light {% endif %} border mx-2">
-								<i class="bi-search mx-1" aria-hidden="true"></i>
-							</button>
-						</div>
-						{% if data.searchquery %}
-						<div>
-							<a href="{{ path("links_resetquery") }}" class="btn btn-sm btn-warning border me-2">
-								<i class="bi-x mx-1" aria-hidden="true"></i>
-							</a>
-						</div>
-						{% endif %}
-					</div>
+				<form action="{{ url('links_setquery') }}" method="get">
+				<div class="input-group me-3">
+					<input type="text" class="form-control form-control-sm {% if data.searchquery != '' %}border-primary{% endif %}" id="searchquery" name="searchquery" placeholder="Search for.." value="{{ data.searchquery }}">
+					{% if data.searchquery %}
+						<a href="{{ path("links_resetquery") }}" class="btn btn-sm btn-light border-primary">
+							<i class="bi-x mx-1" aria-hidden="true"></i>
+						</a>
+					{% endif %}
+					<button type="submit" class="btn btn-sm {% if data.searchquery != '' %}btn-primary {% else %} btn-light border{% endif %}">
+						<i class="bi-search mx-1" aria-hidden="true"></i>
+					</button>
+				</div>
 
-					</form>
-					<div class="dropdown">
-						<button type="button" class="btn  btn-sm btn-light border dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-							<i class="bi-funnel mx-1" aria-hidden="true"></i> Filter
-						</button>
-						<div class="dropdown-menu p-3" style="width: 15rem;">
-							<button class="btn btn-sm btn-light border my-2 w-100 text-start">
-								<i class="bi-star-fill mx-1" aria-hidden="true"></i> Only favorite links</button>
-							<button class="btn btn-sm btn-light border my-2 w-100 text-start">
-								<i class="bi-circle-fill text-success mx-1" aria-hidden="true"></i> Only active links</button>
-							<button class="btn btn-sm btn-light border my-2 w-100 text-start">
-								<i class="bi-circle-fill text-danger mx-1" aria-hidden="true"></i> Only inactive links</button>
-						</div>
+				</form>
+				<div class="dropdown">
+					<button type="button" class="btn btn-sm btn-sm {% if data.filter.filter_is_active == 1 %}btn-primary{% else %}btn-light border{% endif %} dropdown-toggle ms-3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+						<i class="bi-funnel mx-1" aria-hidden="true"></i> Filter
+					</button>
+					<form action="{{ url('links_setfilter') }}" method="post" name="filterform">
+						<input type="hidden" name="filter_action" value="">
+						<input type="hidden" name="filter_value" value="0">
+					<div class="dropdown-menu p-3" style="width: 15rem;">
+						<button class="btn btn-sm btn-light border my-2 w-100 text-start {% if data.filter.only_my_favs == 1 %}active{% endif %}"
+							title="{% if data.filter.only_my_favs == 1 %}Remove filter for only favourite links{% else %}Show only my favourite links{% endif %}"
+							onclick="document.filterform.filter_action.value = 'only_my_favs'; document.filterform.filter_value.value = '{% if data.filter.only_my_favs == 1 %}0{% else %}1{% endif %}';document.filterform.submit();">
+							<i class="bi-star-fill mx-1" aria-hidden="true"></i> Only favorite links</button>
+						<button class="btn btn-sm btn-light border my-2 w-100 text-start {% if data.filter.only_active_links == 1 %}active{% endif %}"
+							title="{% if data.filter.only_active_links == 1 %}Remove filter for only activated links{% else %}Show only activated links{% endif %}"
+							onclick="document.filterform.filter_action.value = 'only_active_links'; document.filterform.filter_value.value = '{% if data.filter.only_active_links == 1 %}0{% else %}1{% endif %}';document.filterform.submit();">
+							<i class="bi-circle-fill text-success mx-1" aria-hidden="true"></i> Only active links</button>
+						<button class="btn btn-sm btn-light border my-2 w-100 text-start {% if data.filter.only_inactive_links == 1 %}active{% endif %}"
+							title="{% if data.filter.only_inactive_links == 1 %}Remove filter for only deactivated links{% else %}Show only deactivated links{% endif %}"
+							onclick="document.filterform.filter_action.value = 'only_inactive_links'; document.filterform.filter_value.value = '{% if data.filter.only_inactive_links == 1 %}0{% else %}1{% endif %}';document.filterform.submit();">
+							<i class="bi-circle-fill text-danger mx-1" aria-hidden="true"></i> Only inactive links</button>
 					</div>
+					</form>
+				</div>
+				{% if data.filter.filter_is_active == 1 %}
+				<form action="{{ path("links_setfilter") }}" method="post">
+					<input type="hidden" name="filter_action" value="reset">
+					<button type="submit" class="btn btn-sm btn-primary ms-1" title="Remove all filters">
+						<i class="bi-x mx-1" aria-hidden="true"></i>
+					</button>
+				</form>
+				{% endif %}
 
 			</div>
 		</div>
