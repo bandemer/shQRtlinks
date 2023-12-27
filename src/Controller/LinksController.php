@@ -220,7 +220,7 @@ class LinksController extends AbstractController
 
             $em->remove($link);
             $em->flush();
-            $this->addFlash('notice', 'Your link was successfully deleted!');
+            $this->addFlash('notice', 'The link was successfully deleted!');
         } else {
             $this->addFlash('error', 'Deletion of link was not possible!');
         }
